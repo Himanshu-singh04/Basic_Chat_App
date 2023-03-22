@@ -1,26 +1,24 @@
 import 'package:chatapp/helper/helper.dart';
-import 'package:chatapp/pages/register_page.dart';
+import 'package:chatapp/pages/home_page.dart';
+import 'package:chatapp/pages/login_page.dart';
 import 'package:chatapp/services/auth_service.dart';
-import 'package:chatapp/services/database_service.dart';
-import 'package:chatapp/widgets/widgets.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-import 'home_page.dart';
+import '../widgets/widgets.dart';
 
-class login_page extends StatefulWidget {
-  const login_page({super.key});
+class register_page extends StatefulWidget {
+  const register_page({super.key});
 
   @override
-  State<login_page> createState() => _login_pageState();
+  State<register_page> createState() => _register_pageState();
 }
 
-class _login_pageState extends State<login_page> {
+class _register_pageState extends State<register_page> {
   final form_key = GlobalKey<FormState>();
   String email = "";
   String password = "";
+  String full_name = "";
   bool is_loading = false;
   auth_service authservice = auth_service();
   @override
@@ -52,7 +50,7 @@ class _login_pageState extends State<login_page> {
                       SizedBox(
                         height: 10,
                       ),
-                      Text("Login to find out new friends",
+                      Text("Create new account to explore more!!!",
                           style: TextStyle(
                               fontSize: 15, fontWeight: FontWeight.w300)),
                       Image.asset(
@@ -77,6 +75,29 @@ class _login_pageState extends State<login_page> {
                                   .hasMatch(val!)
                               ? null
                               : "please enter a valid email";
+                        },
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      TextFormField(
+                        decoration: text_input_decoration.copyWith(
+                            labelText: "Enter full name",
+                            prefixIcon: Icon(
+                              Icons.person,
+                              color: Colors.black,
+                            )),
+                        onChanged: (val) {
+                          setState(() {
+                            full_name = val;
+                          });
+                        },
+                        validator: (val) {
+                          if (val!.isNotEmpty) {
+                            return null;
+                          } else {
+                            return "Name block cannot be empty";
+                          }
                         },
                       ),
                       SizedBox(
@@ -114,11 +135,11 @@ class _login_pageState extends State<login_page> {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10))),
                           child: Text(
-                            "Sign In",
+                            "Register Now",
                             style: TextStyle(color: Colors.white, fontSize: 16),
                           ),
                           onPressed: () {
-                            login();
+                            register();
                           },
                         ),
                       ),
@@ -126,14 +147,14 @@ class _login_pageState extends State<login_page> {
                         height: 10,
                       ),
                       Text.rich(TextSpan(
-                          text: "Still Don't have an account ? ",
+                          text: "You have an account!! Come ",
                           children: <TextSpan>[
                             TextSpan(
-                                text: "Register Now",
+                                text: "Sign In",
                                 style: TextStyle(color: Colors.blue),
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
-                                    next_screen(context, register_page());
+                                    next_screen(context, login_page());
                                   })
                           ]))
                     ],
@@ -144,28 +165,23 @@ class _login_pageState extends State<login_page> {
     );
   }
 
-  login() async {
+  register() async {
     if (form_key.currentState!.validate()) {
       setState(() {
         is_loading = true;
       });
       await authservice
-          .login_with_email_and_password(email, password)
+          .register_user_with_email_and_password(full_name, email, password)
           .then((value) async {
         if (value == true) {
-          QuerySnapshot snapshot = await database_service(
-                  uid: FirebaseAuth.instance.currentUser!.uid)
-              .getting_user_data(email);
           await Helper_functions.save_user_log_in_status(true);
           await Helper_functions.save_useremail(email);
-          await Helper_functions.save_username(snapshot.docs[0]['fullname']);
+          await Helper_functions.save_username(full_name);
           next_screen_replace(context, home_page());
         } else {
           setState(() {
             snack_bar(context, Colors.blue, value);
-            setState(() {
-              is_loading = false;
-            });
+            is_loading = false;
           });
         }
       });

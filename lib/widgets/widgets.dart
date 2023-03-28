@@ -25,6 +25,7 @@ void snack_bar(context, color, message) {
       style: TextStyle(fontSize: 15),
     ),
     backgroundColor: color,
+    duration: Duration(seconds: 2),
     action: SnackBarAction(label: "ok", onPressed: () {}),
   ));
 }

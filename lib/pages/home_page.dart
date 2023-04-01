@@ -139,9 +139,6 @@ class _home_pageState extends State<home_page> {
                         ],
                       );
                     });
-                authservice.sign_out().whenComplete(() {
-                  next_screen_replace(context, login_page());
-                });
               },
               selectedColor: Colors.cyan,
               contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),

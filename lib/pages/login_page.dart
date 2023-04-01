@@ -27,6 +27,7 @@ class _login_pageState extends State<login_page> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         shadowColor: Colors.black,
         backgroundColor: Theme.of(context).primaryColor,
       ),

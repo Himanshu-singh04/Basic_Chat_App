@@ -103,9 +103,6 @@ class _profile_pageState extends State<profile_page> {
                         ],
                       );
                     });
-                authservice.sign_out().whenComplete(() {
-                  next_screen_replace(context, login_page());
-                });
               },
               selectedColor: Colors.cyan,
               contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
@@ -151,11 +148,11 @@ class _profile_pageState extends State<profile_page> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "full Name ",
+                  "email",
                   style: TextStyle(fontSize: 16),
                 ),
                 Text(
-                  widget.username,
+                  widget.email,
                   style: TextStyle(fontSize: 16),
                 ),
               ],
